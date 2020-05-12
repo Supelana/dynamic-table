@@ -54,8 +54,14 @@ export const WeighingListDummyDataService = {
     const record = new WeighingListRecord();
     record.values = this.getColumnValues();
     record.documents = this.getDocuments();
+    record.id = 1;
+    
+    const record2 = new WeighingListRecord();
+    record2.values = this.getColumnValues();
+    record2.documents = this.getDocuments();
+    record2.id = 2;
 
-    const records = [record];
+    const records = [record, record2];
 
     return records;
   },
@@ -88,6 +94,8 @@ export const WeighingListDummyDataService = {
     const document2 = new AttachedDocument();
     document2.name = 'Aktivitetsliste.xlsx';
     document2.dataType = FileExtension.xlsx;
+
+    return [document1, document2];
   }
 }
 
