@@ -14,14 +14,14 @@ export const WeighingListModule = {
 
   init() {
     console.log('WeighingListModule loaded');
-    this.bindUIActions();
+    this.weighingList = this.getWeighingList();
     this.renderWeighingList();
+    this.bindUIActions();
   },
 
   bindUIActions() { },
 
   renderWeighingList() {
-    this.weighingList = this.getWeighingList();
     this.renderTable();
     this.renderColumns();
     this.renderRows();
@@ -47,6 +47,7 @@ export const WeighingListModule = {
     for (let i = 0; i < columns.length; i++) {
       const column = columns[i];
       const th = document.createElement('th');
+      
       th.innerText = column.displayText;
       tr.appendChild(th);
     }
@@ -63,6 +64,7 @@ export const WeighingListModule = {
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
       const tr = document.createElement('tr');
+      
       this.renderCells(record.values, tr);
       table.appendChild(tr);
     }
