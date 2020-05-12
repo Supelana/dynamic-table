@@ -11,18 +11,46 @@ export const WeighingListModule = {
   init() {
     console.log('WeighingListModule loaded');
     this.weighingList = WeighingListService.getDummyList();
+    this.renderPagination();
     this.renderWeighingList();
     this.bindUIActions();
+
+    document.querySelector('#weighing-list').appendChild(this.docFragment);
   },
 
   bindUIActions() { },
 
+  renderPagination() {
+    const nextBtn = document.createElement('button');
+    nextBtn.textContent = 'Næste';
+    nextBtn.component = this;
+    nextBtn.addEventListener('click', this.next);
+
+    this.docFragment.appendChild(nextBtn);
+  },
+
+  next(event) {
+    const component = event.target.component;
+    component.clearTable();
+    this.docFragment = component.getDocumentFragment('#weighing-list');
+    this.weighingList = component.weighingList;
+    component.renderRows(this.weighingList.records, this.docFragment);
+
+    const tbody = this.docFragment.querySelector('#weighing-list-tbody');
+    document.querySelector('#weighing-list-tbody').replaceWith(tbody);
+  },
+
+  getDocumentFragment(elementId) {
+    const docFragment = new DocumentFragment();
+    const element = document.querySelector(elementId);
+    docFragment.appendChild(element.cloneNode(true));
+    return docFragment;
+  },
+
   renderWeighingList() {
     this.renderTable();
     this.renderColumns();
-    this.renderRows();
-
-    document.querySelector('#weighing-list').appendChild(this.docFragment);
+    this.renderRows(this.weighingList.records, this.docFragment);
   },
 
   renderTable() {
@@ -68,11 +96,10 @@ export const WeighingListModule = {
     tableRow.appendChild(th);
   },
 
-  renderRows() {
-    const records = this.weighingList.records;
+  renderRows(records, docFragment) {
     if (!records) { return; }
 
-    const tbody = this.docFragment.querySelector('#weighing-list-tbody');
+    const tbody = docFragment.querySelector('#weighing-list-tbody');
 
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
@@ -81,7 +108,7 @@ export const WeighingListModule = {
 
       this.renderCells(record, tr);
       tbody.appendChild(tr);
-      this.renderDocuments(record);
+      this.renderDocuments(record, docFragment);
     }
   },
 
@@ -132,7 +159,7 @@ export const WeighingListModule = {
     }
   },
 
-  renderDocuments(record) {
+  renderDocuments(record, docFragment) {
     if (!record.documents) { return; }
 
     const tr = document.createElement('tr');
@@ -140,7 +167,7 @@ export const WeighingListModule = {
     tr.id = `document-tr-${record.id}`;
 
     const td = document.createElement('td');
-    td.colSpan = this.getWeighingListColumnCount();
+    td.colSpan = this.getWeighingListColumnCount(docFragment);
 
     const table = document.createElement('table');
     const thead = document.createElement('thead');
@@ -165,7 +192,7 @@ export const WeighingListModule = {
       tbody.appendChild(tr);
     }
 
-    this.docFragment.querySelector('#weighing-list-tbody').appendChild(tr);
+    docFragment.querySelector('#weighing-list-tbody').appendChild(tr);
   },
 
   getFileExtensionIcon(attachedDocument) {
@@ -208,7 +235,15 @@ export const WeighingListModule = {
     }
   },
 
-  getWeighingListColumnCount() {
-    return this.docFragment.querySelector('#weighing-list-thead').firstChild.childNodes.length;
+  getWeighingListColumnCount(docFragment) {
+    return docFragment.querySelector('#weighing-list-thead').firstChild.childNodes.length;
+  },
+
+  clearTable() {
+    const tbody = document.querySelector('#weighing-list-tbody');
+
+    while (tbody.firstChild) {
+      tbody.removeChild(tbody.firstChild);
+    }
   }
 }
