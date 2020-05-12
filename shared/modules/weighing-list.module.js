@@ -30,12 +30,12 @@ export const WeighingListModule = {
 
     const thead = document.createElement('thead')
     thead.id = 'weighing-list-thead'
-    table.appendChild(thead);
 
     const tbody = document.createElement('tbody')
     tbody.id = 'weighing-list-tbody'
-    table.appendChild(tbody);
 
+    table.appendChild(thead);
+    table.appendChild(tbody);
     this.docFragment.appendChild(table);
   },
 
@@ -135,20 +135,21 @@ export const WeighingListModule = {
   renderDocuments(record) {
     if (!record.documents) { return; }
 
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
-    table.appendChild(thead);
-    table.appendChild(tbody);
-
-    const td = document.createElement('td');
-    td.colSpan = this.docFragment.querySelector('#weighing-list-thead').firstChild.childNodes.length;
-    td.appendChild(table);
-
     const tr = document.createElement('tr');
     tr.style.display = 'none';
     tr.id = `document-tr-${record.id}`;
+
+    const td = document.createElement('td');
+    td.colSpan = this.getWeighingListColumnCount();
+
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
     tr.appendChild(td);
+    td.appendChild(table);
+    table.appendChild(thead);
+    table.appendChild(tbody);
 
     for (let i = 0; i < record.documents.length; i++) {
       const attachedDocument = record.documents[i];
@@ -187,4 +188,8 @@ export const WeighingListModule = {
       }
     }
   },
+
+  getWeighingListColumnCount() {
+    return this.docFragment.querySelector('#weighing-list-thead').firstChild.childNodes.length;
+  }
 }
