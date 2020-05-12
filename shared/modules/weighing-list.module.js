@@ -1,4 +1,5 @@
 import { WeighingListService } from '../services/weighing-list.service.js';
+import { FileExtension } from '../enums/file-extension.enum.js';
 
 export const WeighingListModule = {
 
@@ -106,7 +107,6 @@ export const WeighingListModule = {
     if (documentCount > 0) {
       const li = document.createElement('li');
       li.classList.add('fa', 'fa-chevron-down');
-      li.style.paddingRight = '10px';
       li.documentRowId = `document-tr-${record.id}`;
       li.addEventListener('click', this.toggleShowDocuments);
 
@@ -155,13 +155,32 @@ export const WeighingListModule = {
       const attachedDocument = record.documents[i];
       const tr = document.createElement('tr');
       const td = document.createElement('td');
-      td.innerText = attachedDocument.name;
+
+      const label = document.createElement('label');
+      label.innerText = attachedDocument.name;
 
       tr.appendChild(td);
+      td.appendChild(this.getFileExtensionIcon(attachedDocument));
+      td.appendChild(label);
       tbody.appendChild(tr);
     }
 
     this.docFragment.querySelector('#weighing-list-tbody').appendChild(tr);
+  },
+
+  getFileExtensionIcon(attachedDocument) {
+    const li = document.createElement('li');
+
+    switch (attachedDocument.dataType) {
+      case FileExtension.xlsx:
+        li.classList.add('fa', 'fa-file-excel-o');
+        break;
+      case FileExtension.pdf:
+        li.classList.add('fa', 'fa-file-pdf-o');
+        break;
+    }
+
+    return li;
   },
 
   sort(elements) {
