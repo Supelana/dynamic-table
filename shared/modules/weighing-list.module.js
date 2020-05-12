@@ -98,24 +98,43 @@ export const WeighingListModule = {
   },
 
   renderDocumentCell(record, tableRow) {
+    const documentCount = record.documents ? record.documents.length : 0;
     const td = document.createElement('td');
-    td.innerText = record.documents ? record.documents.length : 0;
-    td.documentRowId = `document-tr-${record.id}`;
-    td.addEventListener('click', this.toggleShowDocuments);
+    const label = document.createElement('label');
+    label.innerText = documentCount;
+
+    if (documentCount > 0) {
+      const li = document.createElement('li');
+      li.classList.add('fa', 'fa-chevron-down');
+      li.style.paddingRight = '10px';
+      li.documentRowId = `document-tr-${record.id}`;
+      li.addEventListener('click', this.toggleShowDocuments);
+
+      td.appendChild(li);
+    }
+
+    td.appendChild(label);
     tableRow.appendChild(td);
   },
 
   toggleShowDocuments(event) {
-    const tr = document.querySelector(`#${event.target.documentRowId}`)
+    const li = event.target;
+    const tr = document.querySelector(`#${li.documentRowId}`)
+
+    li.classList = [];
 
     if (tr.style.display === 'none') {
+      li.classList.add('fa', 'fa-chevron-up');
       tr.style.display = ''
     } else {
+      li.classList.add('fa', 'fa-chevron-down');
       tr.style.display = 'none'
-    }  
+    }
   },
 
   renderDocuments(record) {
+    if (!record.documents) { return; }
+
     const table = document.createElement('table');
     const thead = document.createElement('thead');
     const tbody = document.createElement('tbody');

@@ -58,7 +58,7 @@ export const WeighingListDummyDataService = {
     
     const record2 = new WeighingListRecord();
     record2.values = this.getColumnValues();
-    record2.documents = this.getDocuments();
+    // record2.documents = this.getDocuments();
     record2.id = 2;
 
     const records = [record, record2];
