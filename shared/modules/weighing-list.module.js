@@ -27,6 +27,15 @@ export const WeighingListModule = {
   renderTable() {
     const table = document.createElement('table');
     table.id = 'weighing-list-table'
+
+    const thead = document.createElement('thead')
+    thead.id = 'weighing-list-thead'
+    table.appendChild(thead);
+    
+    const tbody = document.createElement('tbody')
+    tbody.id = 'weighing-list-tbody'
+    table.appendChild(tbody);
+
     this.docFragment.appendChild(table);
   },
 
@@ -36,7 +45,7 @@ export const WeighingListModule = {
 
     this.sort(columns);
 
-    const table = this.docFragment.querySelector('#weighing-list-table');
+    const thead = this.docFragment.querySelector('#weighing-list-thead');
     const tr = document.createElement('tr');
 
     for (let i = 0; i < columns.length; i++) {
@@ -47,21 +56,21 @@ export const WeighingListModule = {
       tr.appendChild(th);
     }
 
-    table.appendChild(tr);
+    thead.appendChild(tr);
   },
 
   renderRows() {
     const records = this.weighingList.records;
     if (!records) { return; }
 
-    const table = this.docFragment.querySelector('#weighing-list-table');
+    const tbody = this.docFragment.querySelector('#weighing-list-tbody');
 
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
       const tr = document.createElement('tr');
 
       this.renderCells(record.values, tr);
-      table.appendChild(tr);
+      tbody.appendChild(tr);
     }
   },
 
