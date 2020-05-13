@@ -63,10 +63,12 @@ export const WeighingListModule = {
 
   renderTable() {
     const table = this.createElement(`
+        <div class="table-wrapper">
             <table id="weighing-list-table" class="table table-bordered table-hover">
                 <thead id="weighing-list-thead"></thead>
                 <tbody id="weighing-list-tbody"></tbody>
             </table>
+        </div>
         `);
 
     state.docFragment.appendChild(table);
