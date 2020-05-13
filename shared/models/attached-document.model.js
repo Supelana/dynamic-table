@@ -1,5 +1,7 @@
 export class AttachedDocument {
-  name;
-  dataType;
-  documentId;
+  constructor(name, dataType, documentId) {
+    this.name = name;
+    this.dataType = dataType;
+    this.documentId = documentId;
+  }
 }

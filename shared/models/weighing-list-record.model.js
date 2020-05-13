@@ -1,5 +1,7 @@
 export class WeighingListRecord {
-  values;
-  documents;
-  id;
+  constructor(values, documents, id) {
+    this.values = values;
+    this.documents = documents;
+    this.id = id;
+  }
 }

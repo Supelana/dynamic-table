@@ -1,6 +1,8 @@
 export class ColumnDefinition {
-  navColumnId;
-  displayText;
-  dataType;
-  sortOrder;
+  constructor(navColumnId, displayText, dataType, sortOrder) {
+    this.navColumnId = navColumnId;
+    this.displayText = displayText;
+    this.dataType = dataType;
+    this.sortOrder = sortOrder;
+  }
 }

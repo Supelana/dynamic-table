@@ -1,5 +1,7 @@
 export class WeighingList {
-  definition;
-  records;
-  totalCount;
+  constructor(definition, records, totalCount) {
+    this.definition = definition;
+    this.records = records;
+    this.totalCount = totalCount;
+  }
 }

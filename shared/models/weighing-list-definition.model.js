@@ -1,4 +1,6 @@
 export class WeighingListDefinition {
-  filters;
-  columns;
+  constructor(filters, columns) {
+    this.filters = filters;
+    this.columns = columns;
+  }
 }
