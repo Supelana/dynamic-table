@@ -1,5 +1,6 @@
 import { WeighingListService } from '../services/weighing-list.service.js';
 import { FileExtension } from '../enums/file-extension.enum.js';
+import { WeighingListDataType } from '../enums/weighing-list-data-type.enum.js';
 
 let state;
 let component;
@@ -53,13 +54,14 @@ export const WeighingListModule = {
 
   renderTable() {
     const table = document.createElement('table');
-    table.id = 'weighing-list-table'
+    table.id = 'weighing-list-table';
+    table.classList.add('table', 'table-bordered', 'table-hover');
 
-    const thead = document.createElement('thead')
-    thead.id = 'weighing-list-thead'
+    const thead = document.createElement('thead');
+    thead.id = 'weighing-list-thead';
 
-    const tbody = document.createElement('tbody')
-    tbody.id = 'weighing-list-tbody'
+    const tbody = document.createElement('tbody');
+    tbody.id = 'weighing-list-tbody';
 
     table.appendChild(thead);
     table.appendChild(tbody);
@@ -80,8 +82,11 @@ export const WeighingListModule = {
     for (let i = 0; i < columns.length; i++) {
       const column = columns[i];
       const th = document.createElement('th');
-
       th.innerText = column.displayText;
+      if (column.dataType === WeighingListDataType.Date) {
+        th.classList.add('th-date');
+      }
+
       tr.appendChild(th);
     }
 
@@ -91,6 +96,7 @@ export const WeighingListModule = {
   renderDocumentColumn(tableRow) {
     const th = document.createElement('th');
     th.innerText = 'Dokumenter';
+    th.classList.add('th-document');
     tableRow.appendChild(th);
   },
 
@@ -162,8 +168,9 @@ export const WeighingListModule = {
     if (!record.documents) { return; }
 
     const tr = document.createElement('tr');
-    tr.style.display = 'none';
     tr.id = `document-tr-${record.id}`;
+    tr.classList.add('tr-no-hover');
+    tr.style.display = 'none';
 
     const td = document.createElement('td');
     td.colSpan = this.getWeighingListColumnCount();
@@ -181,7 +188,6 @@ export const WeighingListModule = {
       const attachedDocument = record.documents[i];
       const tr = document.createElement('tr');
       const td = document.createElement('td');
-
       const label = document.createElement('label');
       label.innerText = attachedDocument.name;
 

@@ -20,6 +20,6 @@ td li {
   padding-right: 10px;
 }
 
-/* tr:nth-child(even) {
-  background-color: #f2f2f2;
-} */
+.th-document {
+  width: 1px !important;
+}
