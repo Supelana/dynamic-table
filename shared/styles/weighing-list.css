@@ -23,3 +23,27 @@ td li {
 .th-document {
   width: 1px !important;
 }
+
+.th-date {
+  min-width: 85px;
+}
+
+.table-hover > tbody > .tr-no-hover:hover {
+  background-color: initial;
+}
+
+.color-green {
+  color: lightgreen;
+}
+
+.color-red {
+  color: red;
+}
+
+.ul-document {
+  padding-left: 0px;
+}
+
+.li-document {
+  list-style-type: none;
+}

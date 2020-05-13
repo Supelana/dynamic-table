@@ -175,26 +175,25 @@ export const WeighingListModule = {
     const td = document.createElement('td');
     td.colSpan = this.getWeighingListColumnCount();
 
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const tbody = document.createElement('tbody');
+    const ul = document.createElement('ul');
+    ul.classList.add('ul-document')
 
     tr.appendChild(td);
-    td.appendChild(table);
-    table.appendChild(thead);
-    table.appendChild(tbody);
+    td.appendChild(ul);
 
     for (let i = 0; i < record.documents.length; i++) {
       const attachedDocument = record.documents[i];
-      const tr = document.createElement('tr');
-      const td = document.createElement('td');
-      const label = document.createElement('label');
-      label.innerText = attachedDocument.name;
 
-      tr.appendChild(td);
-      td.appendChild(this.getFileExtensionIcon(attachedDocument));
-      td.appendChild(label);
-      tbody.appendChild(tr);
+      const li = document.createElement('li');
+      li.classList.add('li-document')
+
+      const a = document.createElement('a');
+      a.innerText = attachedDocument.name;
+      a.href = '#';
+
+      li.appendChild(this.getFileExtensionIcon(attachedDocument));
+      li.appendChild(a);
+      ul.appendChild(li);
     }
 
     state.docFragment.querySelector('#weighing-list-tbody').appendChild(tr);
@@ -205,10 +204,10 @@ export const WeighingListModule = {
 
     switch (attachedDocument.dataType) {
       case FileExtension.xlsx:
-        li.classList.add('fa', 'fa-file-excel-o');
+        li.classList.add('fa', 'fa-file-excel-o', 'color-green');
         break;
       case FileExtension.pdf:
-        li.classList.add('fa', 'fa-file-pdf-o');
+        li.classList.add('fa', 'fa-file-pdf-o', 'color-red');
         break;
     }
 
