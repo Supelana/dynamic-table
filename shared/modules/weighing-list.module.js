@@ -137,11 +137,19 @@ export const WeighingListModule = {
     label.innerText = documentCount;
 
     if (documentCount > 0) {
-      const li = document.createElement('li');
-      li.classList.add('fa', 'fa-chevron-down');
-      li.documentRowId = `document-tr-${record.id}`;
-      li.addEventListener('click', this.toggleShowDocuments);
+      td.addEventListener('click', this.toggleShowDocuments)
+      td.ids = {
+        parentRowId: tableRow.id,
+        documentRowId: `doc-tr-${record.id}`,
+        iconId: `doc-icon-${record.id}`
+      };
 
+      const li = document.createElement('li');
+      li.classList.add('fa', 'fa-chevron-right');
+      li.id = td.ids.iconId;
+      li.ids = td.ids;
+
+      label.ids = td.ids;
       td.appendChild(li);
     }
 
@@ -150,17 +158,21 @@ export const WeighingListModule = {
   },
 
   toggleShowDocuments(event) {
-    const li = event.target;
-    const tr = document.querySelector(`#${li.documentRowId}`)
+    const element = event.target;
+    const parentRow = document.querySelector(`#${element.ids.parentRowId}`)
+    const documentRow = document.querySelector(`#${element.ids.documentRowId}`)
+    const icon = document.querySelector(`#${element.ids.iconId}`)
 
-    li.classList = [];
+    icon.classList = [];
 
-    if (tr.style.display === 'none') {
-      li.classList.add('fa', 'fa-chevron-up');
-      tr.style.display = ''
+    if (documentRow.style.display === 'none') {
+      icon.classList.add('fa', 'fa-chevron-down');
+      documentRow.style.display = ''
+      parentRow.style.backgroundColor = 'rgb(203, 203, 203)';
     } else {
-      li.classList.add('fa', 'fa-chevron-down');
-      tr.style.display = 'none'
+      icon.classList.add('fa', 'fa-chevron-right');
+      documentRow.style.display = 'none'
+      parentRow.style.backgroundColor = '';
     }
   },
 
@@ -168,7 +180,7 @@ export const WeighingListModule = {
     if (!record.documents) { return; }
 
     const tr = document.createElement('tr');
-    tr.id = `document-tr-${record.id}`;
+    tr.id = `doc-tr-${record.id}`;
     tr.classList.add('tr-no-hover');
     tr.style.display = 'none';
 
