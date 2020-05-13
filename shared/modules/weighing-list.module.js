@@ -22,12 +22,9 @@ export const WeighingListModule = {
     state.weighingList = WeighingListService.getDummyList();
     this.renderPagination();
     this.renderWeighingList();
-    this.bindUIActions();
 
     document.querySelector('#weighing-list').appendChild(state.docFragment);
   },
-
-  bindUIActions() { },
 
   renderPagination() {
     if (state.weighingList.totalCount <= state.pageSize) {
@@ -36,11 +33,16 @@ export const WeighingListModule = {
 
     const nextBtn = document.createElement('button');
     nextBtn.textContent = 'Næste';
-    nextBtn.addEventListener('click', this.next);
+    nextBtn.classList.add('btn', 'btn-small', 'btn-pad', 'btn-color');
+    nextBtn.onclick = function () {
+      component.next()
+    };
 
     const prevBtn = document.createElement('button');
     prevBtn.textContent = 'Tilbage';
-    prevBtn.addEventListener('click', this.prev);
+    prevBtn.onclick = function () {
+      component.prev()
+    };
 
     state.docFragment.appendChild(prevBtn);
     state.docFragment.appendChild(nextBtn);
@@ -110,6 +112,7 @@ export const WeighingListModule = {
       const record = records[i];
       const tr = document.createElement('tr');
       tr.id = `tr-${record.id}`;
+      tr.classList.add('cursor-pointer');
 
       this.renderCells(record, tr);
       tbody.appendChild(tr);
@@ -126,6 +129,10 @@ export const WeighingListModule = {
       const value = record.values[i];
       const td = document.createElement('td');
       td.innerText = value.value;
+      td.onclick = function () {
+        component.view(record.id)
+      };
+
       tableRow.appendChild(td);
     }
   },
@@ -135,33 +142,36 @@ export const WeighingListModule = {
     const td = document.createElement('td');
     const label = document.createElement('label');
     label.innerText = documentCount;
+    label.classList.add('cursor-pointer');
 
     if (documentCount > 0) {
-      td.addEventListener('click', this.toggleShowDocuments)
-      td.ids = {
-        parentRowId: tableRow.id,
-        documentRowId: `doc-tr-${record.id}`,
-        iconId: `doc-icon-${record.id}`
-      };
+      const parentRowId = tableRow.id;
+      const documentRowId = `doc-tr-${record.id}`;
+      const iconId = `doc-icon-${record.id}`;
+
+      td.onclick = function () {
+        component.toggleShowDocuments(parentRowId, documentRowId, iconId);
+      }
 
       const li = document.createElement('li');
       li.classList.add('fa', 'fa-chevron-right');
-      li.id = td.ids.iconId;
-      li.ids = td.ids;
+      li.id = iconId;
 
-      label.ids = td.ids;
       td.appendChild(li);
+    } else {
+      td.onclick = function () {
+        component.view(record.id)
+      };
     }
 
     td.appendChild(label);
     tableRow.appendChild(td);
   },
 
-  toggleShowDocuments(event) {
-    const element = event.target;
-    const parentRow = document.querySelector(`#${element.ids.parentRowId}`)
-    const documentRow = document.querySelector(`#${element.ids.documentRowId}`)
-    const icon = document.querySelector(`#${element.ids.iconId}`)
+  toggleShowDocuments(parentRowId, documentRowId, iconId) {
+    const parentRow = document.querySelector(`#${parentRowId}`)
+    const documentRow = document.querySelector(`#${documentRowId}`)
+    const icon = document.querySelector(`#${iconId}`)
 
     icon.classList = [];
 
@@ -262,6 +272,10 @@ export const WeighingListModule = {
     while (tbody.firstChild) {
       tbody.removeChild(tbody.firstChild);
     }
+  },
+
+  view(recordId) {
+    console.log(recordId);
   },
 
   prev() {
