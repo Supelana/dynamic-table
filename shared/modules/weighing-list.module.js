@@ -38,7 +38,7 @@ export const WeighingListModule = {
                     <span>Tilbage</span>
                 </li>
                 <li class="active">
-                    <span id="current-page">Side ${state.pageIndex + 1}</span>
+                    <span id="page-info">${this.getPageInfo()}</span>
                 </li>
                 <li id="btn-next" class="cursor-pointer">
                     <span>Næste</span>
@@ -318,7 +318,7 @@ export const WeighingListModule = {
   updatePagination() {
     const nextBtn = document.getElementById('btn-next');
     const prevBtn = document.getElementById('btn-prev');
-    const paginationInfo = document.getElementById('current-page');
+    const pageInfo = document.getElementById('page-info');
 
     if (this.isLastPage()) {
       nextBtn.classList.add('disabled');
@@ -332,7 +332,7 @@ export const WeighingListModule = {
       prevBtn.classList.remove('disabled');
     }
 
-    paginationInfo.textContent = `Side ${state.pageIndex + 1}`;
+    pageInfo.textContent = this.getPageInfo();
   },
 
   isFirstPage() {
@@ -341,8 +341,15 @@ export const WeighingListModule = {
 
   isLastPage() {
     const currentPage = state.pageIndex + 1;
-    const maxPages = Math.ceil(state.weighingList.totalCount / state.pageSize);
-    return currentPage >= maxPages;
+    return currentPage >= this.getMaxPages();
+  },
+
+  getPageInfo() {
+    return `Side ${state.pageIndex + 1} af ${this.getMaxPages()}`;
+  },
+
+  getMaxPages() {
+    return Math.ceil(state.weighingList.totalCount / state.pageSize);
   },
 
   createElement(htmlString) {
