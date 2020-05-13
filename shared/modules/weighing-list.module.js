@@ -32,6 +32,7 @@ export const WeighingListModule = {
     }
 
     const nextBtn = document.createElement('button');
+    nextBtn.id = 'btn-next';
     nextBtn.textContent = 'Næste';
     nextBtn.classList.add('btn', 'btn-small', 'btn-pad', 'btn-color');
     nextBtn.onclick = function () {
@@ -39,12 +40,21 @@ export const WeighingListModule = {
     };
 
     const prevBtn = document.createElement('button');
+    prevBtn.id = 'btn-prev';
     prevBtn.textContent = 'Tilbage';
+    prevBtn.disabled = true;
     prevBtn.onclick = function () {
       component.prev()
     };
 
+    const paginationInfo = document.createElement('label');
+    paginationInfo.id = 'pagination-info';
+    paginationInfo.textContent = `Side ${state.pageIndex + 1}`;
+    paginationInfo.style.paddingRight = '10px';
+    paginationInfo.style.paddingLeft = '10px';
+
     state.docFragment.appendChild(prevBtn);
+    state.docFragment.appendChild(paginationInfo);
     state.docFragment.appendChild(nextBtn);
   },
 
@@ -281,7 +291,9 @@ export const WeighingListModule = {
   prev() {
     component.clearTable();
     state.docFragment = component.getDocumentFragment('#weighing-list');
+    state.pageIndex--;
     component.renderRows();
+    component.updatePagination();
 
     const tbody = state.docFragment.querySelector('#weighing-list-tbody');
     document.querySelector('#weighing-list-tbody').replaceWith(tbody);
@@ -290,7 +302,9 @@ export const WeighingListModule = {
   next() {
     component.clearTable();
     state.docFragment = component.getDocumentFragment('#weighing-list');
+    state.pageIndex++;
     component.renderRows();
+    component.updatePagination();
 
     const tbody = state.docFragment.querySelector('#weighing-list-tbody');
     document.querySelector('#weighing-list-tbody').replaceWith(tbody);
@@ -302,4 +316,25 @@ export const WeighingListModule = {
     docFragment.appendChild(element.cloneNode(true));
     return docFragment;
   },
+
+  updatePagination() {
+    const nextBtn = document.getElementById('btn-next');
+    nextBtn.disabled = this.isLastPage() ? true : false;
+
+    const prevBtn = document.getElementById('btn-prev');
+    prevBtn.disabled = this.isFirstPage() ? true : false;
+
+    const paginationInfo = document.getElementById('pagination-info');
+    paginationInfo.textContent = `Side ${state.pageIndex + 1}`;
+  },
+
+  isFirstPage() {
+    return state.pageIndex === 0;
+  },
+
+  isLastPage() {
+    const currentPage = state.pageIndex + 1;
+    const maxPages = Math.ceil(state.weighingList.totalCount / state.pageSize);
+    return currentPage >= maxPages;
+  }
 }
