@@ -51,3 +51,12 @@ td li {
 .document-icon {
   font-size: 16px !important;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+}

@@ -9,10 +9,11 @@ export const WeighingListModule = {
 
   state: {
     docFragment: new DocumentFragment(),
+    domParser: new DOMParser(),
     weighingList: undefined,
     language: [],
     pageSize: 20,
-    pageIndex: 0,
+    pageIndex: 0
   },
 
   init() {
@@ -20,8 +21,8 @@ export const WeighingListModule = {
     component = this;
     state = this.state;
     state.weighingList = WeighingListService.getDummyList();
-    this.renderPagination();
     this.renderWeighingList();
+    this.renderPagination();
 
     document.querySelector('#weighing-list').appendChild(state.docFragment);
   },
@@ -31,31 +32,27 @@ export const WeighingListModule = {
       return;
     }
 
-    const nextBtn = document.createElement('button');
-    nextBtn.id = 'btn-next';
-    nextBtn.textContent = 'Næste';
-    nextBtn.classList.add('btn', 'btn-small', 'btn-pad', 'btn-color');
-    nextBtn.onclick = function () {
-      component.next()
-    };
+    const pagination = this.createElement(`
+            <ul class="pagination">
+                <li id="btn-prev" class="cursor-pointer disabled">
+                    <span>Tilbage</span>
+                </li>
+                <li class="active">
+                    <span id="current-page">Side ${state.pageIndex + 1}</span>
+                </li>
+                <li id="btn-next" class="cursor-pointer">
+                    <span>Næste</span>
+                </li>
+            </ul>
+        `);
 
-    const prevBtn = document.createElement('button');
-    prevBtn.id = 'btn-prev';
-    prevBtn.textContent = 'Tilbage';
-    prevBtn.disabled = true;
-    prevBtn.onclick = function () {
+    state.docFragment.appendChild(pagination);
+    state.docFragment.querySelector('#btn-prev').onclick = function () {
       component.prev()
     };
-
-    const paginationInfo = document.createElement('label');
-    paginationInfo.id = 'pagination-info';
-    paginationInfo.textContent = `Side ${state.pageIndex + 1}`;
-    paginationInfo.style.paddingRight = '10px';
-    paginationInfo.style.paddingLeft = '10px';
-
-    state.docFragment.appendChild(prevBtn);
-    state.docFragment.appendChild(paginationInfo);
-    state.docFragment.appendChild(nextBtn);
+    state.docFragment.querySelector('#btn-next').onclick = function () {
+      component.next()
+    };
   },
 
   renderWeighingList() {
@@ -65,18 +62,13 @@ export const WeighingListModule = {
   },
 
   renderTable() {
-    const table = document.createElement('table');
-    table.id = 'weighing-list-table';
-    table.classList.add('table', 'table-bordered', 'table-hover');
+    const table = this.createElement(`
+            <table id="weighing-list-table" class="table table-bordered table-hover">
+                <thead id="weighing-list-thead"></thead>
+                <tbody id="weighing-list-tbody"></tbody>
+            </table>
+        `);
 
-    const thead = document.createElement('thead');
-    thead.id = 'weighing-list-thead';
-
-    const tbody = document.createElement('tbody');
-    tbody.id = 'weighing-list-tbody';
-
-    table.appendChild(thead);
-    table.appendChild(tbody);
     state.docFragment.appendChild(table);
   },
 
@@ -289,22 +281,26 @@ export const WeighingListModule = {
   },
 
   prev() {
-    component.clearTable();
-    state.docFragment = component.getDocumentFragment('#weighing-list');
+    if (this.isFirstPage()) { return; }
+
+    this.clearTable();
+    state.docFragment = this.getDocumentFragment('#weighing-list');
     state.pageIndex--;
-    component.renderRows();
-    component.updatePagination();
+    this.renderRows();
+    this.updatePagination();
 
     const tbody = state.docFragment.querySelector('#weighing-list-tbody');
     document.querySelector('#weighing-list-tbody').replaceWith(tbody);
   },
 
   next() {
-    component.clearTable();
-    state.docFragment = component.getDocumentFragment('#weighing-list');
+    if (this.isLastPage()) { return; }
+
+    this.clearTable();
+    state.docFragment = this.getDocumentFragment('#weighing-list');
     state.pageIndex++;
-    component.renderRows();
-    component.updatePagination();
+    this.renderRows();
+    this.updatePagination();
 
     const tbody = state.docFragment.querySelector('#weighing-list-tbody');
     document.querySelector('#weighing-list-tbody').replaceWith(tbody);
@@ -319,12 +315,21 @@ export const WeighingListModule = {
 
   updatePagination() {
     const nextBtn = document.getElementById('btn-next');
-    nextBtn.disabled = this.isLastPage() ? true : false;
-
     const prevBtn = document.getElementById('btn-prev');
-    prevBtn.disabled = this.isFirstPage() ? true : false;
+    const paginationInfo = document.getElementById('current-page');
 
-    const paginationInfo = document.getElementById('pagination-info');
+    if (this.isLastPage()) {
+      nextBtn.classList.add('disabled');
+    } else {
+      nextBtn.classList.remove('disabled');
+    }
+
+    if (this.isFirstPage()) {
+      prevBtn.classList.add('disabled');
+    } else {
+      prevBtn.classList.remove('disabled');
+    }
+
     paginationInfo.textContent = `Side ${state.pageIndex + 1}`;
   },
 
@@ -336,5 +341,9 @@ export const WeighingListModule = {
     const currentPage = state.pageIndex + 1;
     const maxPages = Math.ceil(state.weighingList.totalCount / state.pageSize);
     return currentPage >= maxPages;
+  },
+
+  createElement(htmlString) {
+    return state.domParser.parseFromString(htmlString, 'text/html').body.firstChild;
   }
 }
