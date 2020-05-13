@@ -213,13 +213,14 @@ export const WeighingListModule = {
 
   getFileExtensionIcon(attachedDocument) {
     const li = document.createElement('li');
+    li.classList.add('fa', 'document-icon')
 
     switch (attachedDocument.dataType) {
       case FileExtension.xlsx:
-        li.classList.add('fa', 'fa-file-excel-o', 'color-green');
+        li.classList.add('fa-file-excel-o', 'color-green');
         break;
       case FileExtension.pdf:
-        li.classList.add('fa', 'fa-file-pdf-o', 'color-red');
+        li.classList.add('fa-file-pdf-o', 'color-red');
         break;
     }
 

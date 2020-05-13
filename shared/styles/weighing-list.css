@@ -47,3 +47,7 @@ td li {
 .li-document {
   list-style-type: none;
 }
+
+.document-icon {
+  font-size: 16px;
+}
