@@ -1,56 +1,54 @@
 import { WeighingListService } from '../services/weighing-list.service.js';
 import { FileExtension } from '../enums/file-extension.enum.js';
 
+let state;
+let component;
+
 export const WeighingListModule = {
 
-  docFragment: new DocumentFragment(),
-  numArticles: 5,
-  weighingList: undefined,
-  language: [],
+  state: {
+    docFragment: new DocumentFragment(),
+    weighingList: undefined,
+    language: [],
+    pageSize: 20,
+    pageIndex: 0,
+  },
 
   init() {
     console.log('WeighingListModule loaded');
-    this.weighingList = WeighingListService.getDummyList();
+    component = this;
+    state = this.state;
+    state.weighingList = WeighingListService.getDummyList();
     this.renderPagination();
     this.renderWeighingList();
     this.bindUIActions();
 
-    document.querySelector('#weighing-list').appendChild(this.docFragment);
+    document.querySelector('#weighing-list').appendChild(state.docFragment);
   },
 
   bindUIActions() { },
 
   renderPagination() {
+    if (state.weighingList.totalCount <= state.pageSize) {
+      return;
+    }
+
     const nextBtn = document.createElement('button');
     nextBtn.textContent = 'Næste';
-    nextBtn.component = this;
     nextBtn.addEventListener('click', this.next);
 
-    this.docFragment.appendChild(nextBtn);
-  },
+    const prevBtn = document.createElement('button');
+    prevBtn.textContent = 'Tilbage';
+    prevBtn.addEventListener('click', this.prev);
 
-  next(event) {
-    const component = event.target.component;
-    component.clearTable();
-    this.docFragment = component.getDocumentFragment('#weighing-list');
-    this.weighingList = component.weighingList;
-    component.renderRows(this.weighingList.records, this.docFragment);
-
-    const tbody = this.docFragment.querySelector('#weighing-list-tbody');
-    document.querySelector('#weighing-list-tbody').replaceWith(tbody);
-  },
-
-  getDocumentFragment(elementId) {
-    const docFragment = new DocumentFragment();
-    const element = document.querySelector(elementId);
-    docFragment.appendChild(element.cloneNode(true));
-    return docFragment;
+    state.docFragment.appendChild(prevBtn);
+    state.docFragment.appendChild(nextBtn);
   },
 
   renderWeighingList() {
     this.renderTable();
     this.renderColumns();
-    this.renderRows(this.weighingList.records, this.docFragment);
+    this.renderRows();
   },
 
   renderTable() {
@@ -65,16 +63,16 @@ export const WeighingListModule = {
 
     table.appendChild(thead);
     table.appendChild(tbody);
-    this.docFragment.appendChild(table);
+    state.docFragment.appendChild(table);
   },
 
   renderColumns() {
-    const columns = this.weighingList.definition.columns;
+    const columns = state.weighingList.definition.columns;
     if (!columns) { return; }
 
     this.sort(columns);
 
-    const thead = this.docFragment.querySelector('#weighing-list-thead');
+    const thead = state.docFragment.querySelector('#weighing-list-thead');
     const tr = document.createElement('tr');
 
     this.renderDocumentColumn(tr);
@@ -96,10 +94,11 @@ export const WeighingListModule = {
     tableRow.appendChild(th);
   },
 
-  renderRows(records, docFragment) {
+  renderRows() {
+    const records = state.weighingList.records;
     if (!records) { return; }
 
-    const tbody = docFragment.querySelector('#weighing-list-tbody');
+    const tbody = state.docFragment.querySelector('#weighing-list-tbody');
 
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
@@ -108,7 +107,7 @@ export const WeighingListModule = {
 
       this.renderCells(record, tr);
       tbody.appendChild(tr);
-      this.renderDocuments(record, docFragment);
+      this.renderDocuments(record);
     }
   },
 
@@ -159,7 +158,7 @@ export const WeighingListModule = {
     }
   },
 
-  renderDocuments(record, docFragment) {
+  renderDocuments(record) {
     if (!record.documents) { return; }
 
     const tr = document.createElement('tr');
@@ -167,7 +166,7 @@ export const WeighingListModule = {
     tr.id = `document-tr-${record.id}`;
 
     const td = document.createElement('td');
-    td.colSpan = this.getWeighingListColumnCount(docFragment);
+    td.colSpan = this.getWeighingListColumnCount();
 
     const table = document.createElement('table');
     const thead = document.createElement('thead');
@@ -192,7 +191,7 @@ export const WeighingListModule = {
       tbody.appendChild(tr);
     }
 
-    docFragment.querySelector('#weighing-list-tbody').appendChild(tr);
+    state.docFragment.querySelector('#weighing-list-tbody').appendChild(tr);
   },
 
   getFileExtensionIcon(attachedDocument) {
@@ -224,7 +223,7 @@ export const WeighingListModule = {
   },
 
   getColumnDefinition(navColumnId) {
-    const columns = this.weighingList.definition.columns;
+    const columns = state.weighingList.definition.columns;
 
     for (let i = 0; i < columns.length; i++) {
       const column = columns[i];
@@ -235,8 +234,8 @@ export const WeighingListModule = {
     }
   },
 
-  getWeighingListColumnCount(docFragment) {
-    return docFragment.querySelector('#weighing-list-thead').firstChild.childNodes.length;
+  getWeighingListColumnCount() {
+    return state.docFragment.querySelector('#weighing-list-thead').firstChild.childNodes.length;
   },
 
   clearTable() {
@@ -245,5 +244,30 @@ export const WeighingListModule = {
     while (tbody.firstChild) {
       tbody.removeChild(tbody.firstChild);
     }
-  }
+  },
+
+  prev() {
+    component.clearTable();
+    state.docFragment = component.getDocumentFragment('#weighing-list');
+    component.renderRows();
+
+    const tbody = state.docFragment.querySelector('#weighing-list-tbody');
+    document.querySelector('#weighing-list-tbody').replaceWith(tbody);
+  },
+
+  next() {
+    component.clearTable();
+    state.docFragment = component.getDocumentFragment('#weighing-list');
+    component.renderRows();
+
+    const tbody = state.docFragment.querySelector('#weighing-list-tbody');
+    document.querySelector('#weighing-list-tbody').replaceWith(tbody);
+  },
+
+  getDocumentFragment(elementId) {
+    const docFragment = new DocumentFragment();
+    const element = document.querySelector(elementId);
+    docFragment.appendChild(element.cloneNode(true));
+    return docFragment;
+  },
 }

@@ -13,6 +13,7 @@ export const WeighingListDummyDataService = {
     const weighingList = new WeighingList();
     weighingList.definition = this.getWeighingListDefinition();
     weighingList.records = this.getRecords();
+    weighingList.totalCount = 21;
     return weighingList;
   },
 
