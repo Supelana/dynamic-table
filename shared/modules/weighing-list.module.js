@@ -114,9 +114,14 @@ export const WeighingListModule = {
 
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
+
       const tr = document.createElement('tr');
       tr.id = `tr-${record.id}`;
       tr.classList.add('cursor-pointer');
+
+      if (i % 2 === 0) {
+        tr.classList.add('tr-stripe');
+      }
 
       this.renderCells(record, tr);
       tbody.appendChild(tr);
