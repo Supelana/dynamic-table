@@ -46,13 +46,15 @@ export const WeighingListModule = {
             </ul>
         `);
 
-    state.docFragment.appendChild(pagination);
-    state.docFragment.querySelector('#btn-prev').onclick = function () {
+    pagination.querySelector('#btn-prev').onclick = function () {
       component.prev()
     };
-    state.docFragment.querySelector('#btn-next').onclick = function () {
+
+    pagination.querySelector('#btn-next').onclick = function () {
       component.next()
     };
+
+    state.docFragment.appendChild(pagination);
   },
 
   renderWeighingList() {
@@ -321,9 +323,9 @@ export const WeighingListModule = {
   },
 
   updatePagination() {
-    const nextBtn = document.getElementById('btn-next');
-    const prevBtn = document.getElementById('btn-prev');
-    const pageInfo = document.getElementById('page-info');
+    const nextBtn = document.querySelector('#btn-next');
+    const prevBtn = document.querySelector('#btn-prev');
+    const pageInfo = document.querySelector('#page-info');
 
     if (this.isLastPage()) {
       nextBtn.classList.add('disabled');
