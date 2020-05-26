@@ -1,4 +1,4 @@
-import { WeighingListModule } from './modules/weighing-list.module.js';
+import { WeighingListComponent } from './components/weighing-list/weighing-list.component.js';
 
 window.onload = initModules();
 

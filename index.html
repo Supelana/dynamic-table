@@ -5,13 +5,95 @@
   <title>Page Title</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="/shared/styles/weighing-list.css">
+  <link rel="stylesheet" type="text/css" href="/shared/components/weighing-list/weighing-list.component.css">
+  <link rel="stylesheet" type="text/css"
+    href="/shared/components/weighing-list-filter/weighing-list-filter.component.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="/shared/playground.js" type="module"></script>
+
+  <script type="module">
+    import { WeighingListComponent } from '/shared/components/weighing-list/weighing-list.component.js';
+
+    window.onload = WeighingListComponent.render();
+  </script>
+
 </head>
 
 <body>
   <div id="weighing-list"></div>
+
+  <!-- <button onclick="log()">Add row</button>
+  <table style="width:100%">
+    <thead>
+      <tr>
+        <th>Dokumenter</th>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Age</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr id="mojn">
+        <td>2</td>
+        <td>Jill</td>
+        <td>Smith</td>
+        <td>50</td>
+      </tr>
+      <tr id="documents" style="display: none;">
+        <td colspan="4">
+          <table style="width:100%">
+            <thead>
+              <tr>
+                <th>Navn</th>
+                <th>Sti</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Aktivitetsliste.pdf</td>
+                <td>c:/</td>
+              </tr>
+              <tr>
+                <td>Aktivitetsliste.pdf</td>
+                <td>c:/</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+
+      </tr>
+      <tr>
+        <td>0</td>
+        <td>Eve</td>
+        <td>Jackson</td>
+        <td>94</td>
+      </tr>
+      <tr>
+        <td>0</td>
+        <td>Eve</td>
+        <td>Jackson</td>
+        <td>94</td>
+      </tr>
+      <tr>
+        <td>0</td>
+        <td>Eve</td>
+        <td>Jackson</td>
+        <td>94</td>
+      </tr>
+    </tbody>
+  </table> -->
+
+  <script>
+    function log() {
+      const parentRow = document.querySelector('#mojn');
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.textContent = 'NEW ROW';
+
+      tr.appendChild(td);
+      parentRow.after(tr);
+    }
+  </script>
+
 </body>
 
 </html>

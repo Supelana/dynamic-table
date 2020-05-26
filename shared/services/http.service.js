@@ -26,20 +26,20 @@ export const HttpService = {
     });
   },
 
-  async GET(url) {
-    return await this._request('GET', url);
+  async get(url) {
+    return this._request('GET', url);
   },
 
-  async POST(url) {
-    return await this._request('POST', url);
+  async post(url) {
+    return this._request('POST', url);
   },
   
-  async PUT(url) {
-    return await this._request('PUT', url);
+  async put(url) {
+    return this._request('PUT', url);
   },
 
-  async DELETE(url) {
-    return await this._request('DELETE', url);
+  async delete(url) {
+    return this._request('DELETE', url);
   }
 }
 

@@ -1,0 +1,9 @@
+.checkbox-large {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.accordion-toggle {
+    padding-left: 12px !important;
+}

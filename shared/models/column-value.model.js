@@ -6,5 +6,3 @@ export class ColumnValue {
     this.sortOrder = sortOrder;
   }
 }
-
-
